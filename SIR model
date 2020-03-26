@@ -55,7 +55,7 @@ myfct<-function() {
 for (i in 1:60) {
   graph<-myfct()
   plot(graph, type = "l", xlab = "Time", ylab = "nwcas", xlim = c(1,200), 
-       #ylim = c(1,400))
+       ylim = c(1,400))
   par (new = T)
 }
 
