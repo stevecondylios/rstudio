@@ -1,5 +1,3 @@
-
-
 #initialize the variables 
 N <- 25000         # N = sample size
 S <- rep(0,N)      # S = susceptible 
@@ -12,6 +10,9 @@ I[1]<-5
 R[1]<-80000
 beta<-0.000023     # infection speed 
 alpha<-0.337       # recovery time  => 1/alpha = 3 days to recover  
+
+nbDays<-200
+tnwcas<-rep(0,nbDays)
 
 myfct<-function() {
   for(i in 1:(N-1))  
@@ -42,32 +43,29 @@ myfct<-function() {
     }
   }
   
-  #round the numbers of the time value - 1 unit of time = 1 day
-  timeclass<-as.numeric(cut(time,breaks=seq(0,max(time),1),include.lowest=TRUE))-1
-  #create a contingency table with the time values and the cases (0 = no new case and 1 = a new case)
-  contingency<-table(timeclass,nwcas)    
-  epidemic<-contingency[,2]     # used to graph the nwcas vs time incidence curve 
+  for (i in 1:nbDays) {
+    tnwcas[i]<-sum(nwcas[time > i-1 & time < i]) # 0 < time < 1 , time = i, tnwcas[i] = nwcas in terms of i
+  }
   
-  items_returned <- list()
-  items_returned[["epidemic"]] <- epidemic
-  items_returned[["nwcas"]] <- nwcas
-  return (items_returned)
+  return (tnwcas)
 }
 
 
-# Run simulation 60 times and assign nwcas to a data.frame column each time
 
-output <- matrix(nrow=N, ncol=60)
+nbSimul<-60
+mat <- matrix(NA, nrow  = nbDays, ncol = nbSimul)
 
-for(i in 1:60) {
-  
-  items <- myfct()
-  
-  output[ , i] <- items$nwcas
-  
-  
+
+
+
+
+plot(NA,type = "n", xlab = "Time (days)", ylab = "Incidence (per 100 000 inhabitants)", 
+     xlim = c(0,200), ylim = c(0,400), main = "Incidence curves of 60 epidemics")
+
+for (i in 1:nbSimul) {
+  mat[,i]<-myfct()               #mat[,epidemicnumber]
+  lines(mat[,i], type = "l", col = i)
 }
-
 
 
 
