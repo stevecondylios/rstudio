@@ -1,4 +1,5 @@
 
+
 #initialize the variables 
 N <- 25000         # N = sample size
 S <- rep(0,N)      # S = susceptible 
@@ -47,16 +48,26 @@ myfct<-function() {
   contingency<-table(timeclass,nwcas)    
   epidemic<-contingency[,2]     # used to graph the nwcas vs time incidence curve 
   
-  return (epidemic)
+  items_returned <- list()
+  items_returned[["epidemic"]] <- epidemic
+  items_returned[["nwcas"]] <- nwcas
+  return (items_returned)
 }
 
 
-#Run the simulation 60 times 
-for (i in 1:60) {
-  graph<-myfct()
-  plot(graph, type = "l", xlab = "Time", ylab = "nwcas", xlim = c(1,200), 
-       ylim = c(1,400))
-  par (new = T)
+# Run simulation 60 times and assign nwcas to a data.frame column each time
+
+output <- matrix(nrow=N, ncol=60)
+
+for(i in 1:60) {
+  
+  items <- myfct()
+  
+  output[ , i] <- items$nwcas
+  
+  
 }
+
+
 
 
